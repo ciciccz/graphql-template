@@ -27,6 +27,7 @@ const schema = `
       itemsById(id: Int): Item
       allItems: [Item]
       searchItemsByName(name: String!): [Item]
+      supplierById(id: Int): Supplier
   }
   type Mutation {
     addItem(name: String!, quantity: Int, price: Float, supplier_id: Int): Item
