@@ -18,6 +18,7 @@ const schema = `
   type Query {
       itemsById(id: Int): Item
       allItems: [Item]
+      searchItemsByName(name: String!): [Item]
   }
   `
 
@@ -36,7 +37,14 @@ const itemResolver = {
         return results
       else
         throw graphqlError(404, `Item does not exist.`)
-    }
+    },
+    searchItemsByName(root, { name }, context) {
+      const results = itemMocks.filter(item => item.name.toLowerCase() === name.toLowerCase());
+      if (results.length > 0)
+        return results;
+      else
+        throw graphqlError(404, `No items found with name ${name}`);
+    },
   }
 }
 
