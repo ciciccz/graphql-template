@@ -20,6 +20,9 @@ const schema = `
       allItems: [Item]
       searchItemsByName(name: String!): [Item]
   }
+  type Mutation {
+    addItem(name: String!, quantity: Int, price: Float, supplier_id: Int): Item
+  }
   `
 
 const itemResolver = {
@@ -44,9 +47,35 @@ const itemResolver = {
         return results;
       else
         throw graphqlError(404, `No items found with name ${name}`);
-    },
+    }
+  },
+  Mutation: {
+    addItem(root, { name, quantity, price, supplier_id }, context) {
+      if (!name) {
+        throw graphqlError(400, 'Item name is required.');
+      }
+      if (quantity === undefined || quantity < 0) {
+        throw graphqlError(400, 'Quantity is invalid.');
+      }
+      if (price === undefined || price < 0) {
+        throw graphqlError(400, 'Price is invalid.');
+      }
+      if (supplier_id !== undefined && supplier_id < 0) {
+        throw graphqlError(400, 'Supplier ID is invalid.');
+      }
+
+      const newItem = {
+        id: ++itemIdCounter,
+        name,
+        quantity,
+        price,
+        supplier_id
+      };
+      itemMocks.push(newItem);
+      return newItem;
+    }
   }
-}
+};
 
 const executableSchema = makeExecutableSchema({
   typeDefs: schema,
