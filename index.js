@@ -65,7 +65,7 @@ const itemResolver = {
       }
 
       const newItem = {
-        id: ++itemIdCounter,
+        id: itemMocks.length + 1,
         name,
         quantity,
         price,
