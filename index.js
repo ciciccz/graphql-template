@@ -6,6 +6,10 @@ const itemMocks = [
   { id: 1, name: 'Knock Bits', quantity: 88, price: 12.67, supplier_id: 1 },
   { id: 2, name: 'Widgets', quantity: 10, price: 35.50, supplier_id: 3 }]
 
+const supplierMocks = [
+  { id: 1, name: 'MRU', address: '4825 Mt Royal Gate SW' },
+  { id: 3, name: 'UofC', address: '2500 University Dr NW' },]
+
 const schema = `
   type Item {
     id: ID!
@@ -14,7 +18,11 @@ const schema = `
     price: Float
     supplier_id: Int
   }
- 
+  type Supplier {
+    id: ID!
+    name: String!
+    address: String!
+  }
   type Query {
       itemsById(id: Int): Item
       allItems: [Item]
@@ -47,6 +55,14 @@ const itemResolver = {
         return results;
       else
         throw graphqlError(404, `No items found with name ${name}`);
+    },
+    supplierById(root, { id }, context) {
+      const supplier = supplierMocks.find(supplier => supplier.id === id);
+      if (supplier) {
+        return supplier;
+      } else {
+        throw graphqlError(404, `Supplier with id ${id} does not exist.`);
+      }
     }
   },
   Mutation: {
